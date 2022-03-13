@@ -1,0 +1,371 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  LastLocation:
+    description: LastLocation defines the structure for the last location
+    properties:
+      latitude:
+        description: the gps latitude
+        format: double
+        maxLength: 255
+        type: number
+        x-go-name: Latitude
+      longitude:
+        description: the gps longitude
+        format: double
+        maxLength: 255
+        type: number
+        x-go-name: Longitude
+    required:
+    - longitude
+    - latitude
+    type: object
+    x-go-package: robo-apocalypse/pkg/survivordb
+  Resources:
+    description: Resources defines the structure for a resource
+    properties:
+      ammunition:
+        description: the ammunition the survivor currently has
+        format: int64
+        maxLength: 255
+        type: integer
+        x-go-name: Ammunition
+      food:
+        description: the food the survivor currently has
+        maxLength: 255
+        type: string
+        x-go-name: Food
+      medication:
+        description: the medication the survivor currently has
+        maxLength: 255
+        type: string
+        x-go-name: Medication
+      water:
+        description: the water the survivor currently has
+        format: double
+        maxLength: 255
+        type: number
+        x-go-name: Water
+    required:
+    - water
+    - food
+    - medication
+    - ammunition
+    type: object
+    x-go-package: robo-apocalypse/pkg/survivordb
+  RobotCpu:
+    properties:
+      category:
+        type: string
+        x-go-name: Category
+      manufacturedDate:
+        format: date-time
+        type: string
+        x-go-name: ManufacturedDate
+      model:
+        type: string
+        x-go-name: Model
+      serialNumber:
+        type: string
+        x-go-name: SerialNumber
+    type: object
+    x-go-package: robo-apocalypse/pkg/survivor
+  Survivor:
+    description: Survivor defines the structure for a survivor
+    properties:
+      age:
+        description: the age for this survivor
+        format: int64
+        maxLength: 3
+        type: integer
+        x-go-name: Age
+      ammunition:
+        description: the ammunition the survivor currently has
+        format: int64
+        maxLength: 255
+        type: integer
+        x-go-name: Ammunition
+      food:
+        description: the food the survivor currently has
+        maxLength: 255
+        type: string
+        x-go-name: Food
+      gender:
+        description: the gender for this survivor
+        maxLength: 16
+        type: string
+        x-go-name: Gender
+      id:
+        description: the id number for this survivor
+        maxLength: 30
+        type: string
+        x-go-name: IdNumber
+      infected:
+        description: the status of infection of the survivor
+        type: boolean
+        x-go-name: Infected
+      latitude:
+        description: the gps latitude
+        format: double
+        maxLength: 255
+        type: number
+        x-go-name: Latitude
+      longitude:
+        description: the gps longitude
+        format: double
+        maxLength: 255
+        type: number
+        x-go-name: Longitude
+      medication:
+        description: the medication the survivor currently has
+        maxLength: 255
+        type: string
+        x-go-name: Medication
+      name:
+        description: the name for this poduct
+        maxLength: 128
+        type: string
+        x-go-name: Name
+      timestamp:
+        description: the time when survivor information was recorded
+        format: date-time
+        type: string
+        x-go-name: LastUpdateTime
+      water:
+        description: the water the survivor currently has
+        format: double
+        maxLength: 255
+        type: number
+        x-go-name: Water
+    required:
+    - longitude
+    - latitude
+    - water
+    - food
+    - medication
+    - ammunition
+    - name
+    - age
+    - gender
+    - id
+    - infected
+    type: object
+    x-go-package: robo-apocalypse/pkg/survivordb
+info:
+  description: Documentation for Survivors API
+  title: of Survivors API
+  version: 1.0.0
+paths:
+  /survivors:
+    get:
+      description: Return a list of survivors from the database
+      operationId: getSurvivors
+      responses:
+        "200":
+          $ref: '#/responses/surivivorsResponse'
+      tags:
+      - survivors
+    post:
+      description: Create a new Survivor
+      operationId: createSurvivor
+      parameters:
+      - description: |-
+          Survivor data structure to = Create.
+          Note: the id field is ignored by update and create operations
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Survivor'
+      responses:
+        "200":
+          description: ""
+        "500":
+          description: ""
+      tags:
+      - survivors
+  /survivors/infected:
+    get:
+      description: Returns a list of infected survivors from the database
+      operationId: getRobotCPU
+      parameters:
+      - description: a BarSlice has bars which are strings
+        example: sortby=category
+        in: query
+        maxItems: 1
+        minItems: 1
+        name: sortby
+        type: string
+        uniqueItems: true
+        x-go-name: Sortby
+      - description: a BarSlice has bars which are strings
+        example: category=Flying
+        in: query
+        maxItems: 1
+        minItems: 1
+        name: category
+        type: string
+        uniqueItems: true
+        x-go-name: Category
+      responses:
+        "200":
+          $ref: '#/responses/robotcpuResponse'
+      tags:
+      - survivors
+    put:
+      description: 'Return the HTTP response code: 200, 404, 500'
+      operationId: setInfected
+      parameters:
+      - description: The id of the survivor for which the operation relates
+        in: body
+        name: Payload
+        required: true
+        schema:
+          properties:
+            id:
+              format: int64
+              type: integer
+              x-go-name: IdNumber
+          type: object
+      responses:
+        "200":
+          description: ""
+        "404":
+          description: ""
+        "500":
+          description: ""
+      tags:
+      - survivors
+  /survivors/location:
+    put:
+      description: 'Return the HTTP response code: 200, 404, 500'
+      operationId: updateLocation
+      parameters:
+      - description: The id of the survivor for which the operation relates
+        in: body
+        name: Payload
+        required: true
+        schema:
+          properties:
+            id:
+              format: int64
+              type: integer
+              x-go-name: IdNumber
+            latitude:
+              description: the gps latitude
+              format: double
+              maxLength: 255
+              type: number
+              x-go-name: Latitude
+            longitude:
+              description: the gps longitude
+              format: double
+              maxLength: 255
+              type: number
+              x-go-name: Longitude
+          required:
+          - longitude
+          - latitude
+          type: object
+      responses:
+        "200":
+          description: ""
+        "404":
+          description: ""
+        "500":
+          description: ""
+      tags:
+      - survivors
+  /survivors/resource:
+    put:
+      description: 'Return the HTTP response code: 200, 404, 500'
+      operationId: updateResource
+      parameters:
+      - description: The id of the survivor for which the operation relates
+        in: body
+        name: Payload
+        required: true
+        schema:
+          properties:
+            ammunition:
+              description: the ammunition the survivor currently has
+              format: int64
+              maxLength: 255
+              type: integer
+              x-go-name: Ammunition
+            food:
+              description: the food the survivor currently has
+              maxLength: 255
+              type: string
+              x-go-name: Food
+            id:
+              format: int64
+              type: integer
+              x-go-name: IdNumber
+            medication:
+              description: the medication the survivor currently has
+              maxLength: 255
+              type: string
+              x-go-name: Medication
+            water:
+              description: the water the survivor currently has
+              format: double
+              maxLength: 255
+              type: number
+              x-go-name: Water
+          required:
+          - water
+          - food
+          - medication
+          - ammunition
+          type: object
+      responses:
+        "200":
+          description: ""
+      tags:
+      - survivors
+  /survivors/stats:
+    get:
+      description: Return the statistics of infected survivors from the database
+      operationId: getStats
+      responses:
+        "200":
+          $ref: '#/responses/statsResponse'
+      tags:
+      - survivors
+produces:
+- application/json
+responses:
+  noContentResponse:
+    description: No content is returned by this API endpoint
+  robotcpuResponse:
+    description: A list of robotcpus
+    schema:
+      items:
+        $ref: '#/definitions/RobotCpu'
+      type: array
+  statsResponse:
+    description: Data structure representing infected survivor stats
+    schema:
+      properties:
+        HealthyPercentage:
+          format: double
+          type: number
+        InfectedPercentage:
+          format: double
+          type: number
+      type: object
+  surivivorsResponse:
+    description: A list of survivors
+    schema:
+      items:
+        $ref: '#/definitions/Survivor'
+      type: array
+  survivorResponse:
+    description: Data structure representing a single survivor
+    schema:
+      $ref: '#/definitions/Survivor'
+schemes:
+- http
+swagger: "2.0"

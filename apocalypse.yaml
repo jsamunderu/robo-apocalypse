@@ -1,0 +1,7 @@
+host: ""
+port: "8080"
+loglevel: 4 
+dbName: "./apocalypse.db"
+webTemplate: "index.tmpl"
+styleSheet: "/style.css"
+destEndpoint: "https://robotstakeover20210903110417.azurewebsites.net/robotcpu"
